@@ -1,0 +1,25 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="map_file" default="$(find peoplebot_navigation)/maps/501.yaml"/>
+  <arg name="open_rviz" default="true"/>
+  <arg name="move_forward_only" default="false"/>
+
+  <include file="$(find peoplebot_tf)/launch/static_tf.launch" />
+
+  <!-- Map server -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+
+  <!-- AMCL -->
+  <include file="$(find peoplebot_navigation)/launch/amcl.launch"/>
+
+  <!-- move_base -->
+  <include file="$(find peoplebot_navigation)/launch/move_base.launch">
+    <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+  </include>
+
+  <!-- rviz -->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find peoplebot_navigation)/rviz/peoplebot_navigation.rviz"/>
+  </group>
+</launch>
